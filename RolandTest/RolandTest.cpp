@@ -40,7 +40,7 @@ class numberToEng : numberToString
 private:
 	string tentSmall = "teen";
 	string tenthEnd = "ty";
-	//map<int, string> ending;
+	
 
 	void setDataOne()
 	{
