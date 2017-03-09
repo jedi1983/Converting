@@ -44,36 +44,36 @@ private:
 
 	void setDataOne()
 	{
-		dataOne[1] = "One";
-		dataOne[2] = "Two";
-		dataOne[3] = "Three";
-		dataOne[4] = "Four";
-		dataOne[5] = "Five";
-		dataOne[6] = "Six";
-		dataOne[7] = "Seven";
-		dataOne[8] = "Eight";
-		dataOne[9] = "Nine";
+		dataOne[1] = "one";
+		dataOne[2] = "two";
+		dataOne[3] = "three";
+		dataOne[4] = "four";
+		dataOne[5] = "five";
+		dataOne[6] = "six";
+		dataOne[7] = "seven";
+		dataOne[8] = "eight";
+		dataOne[9] = "nine";
 
 	}
 	void setDataTenth()
 	{
-		dataTenth[1] = "Ten";
-		dataTenth[2] = "Twenty";
-		dataTenth[3] = "Thirty";
-		dataTenth[4] = "Forty";
-		dataTenth[5] = "Fifty";
-		dataTenth[11] = "Eleven";
-		dataTenth[12] = "Twelve";
-		dataTenth[13] = "Thirteen";
-		dataTenth[14] = "Fourteen";
-		dataTenth[15] = "Fifteen";
+		dataTenth[1] = "ten";
+		dataTenth[2] = "twenty";
+		dataTenth[3] = "thirty";
+		dataTenth[4] = "forty";
+		dataTenth[5] = "fifty";
+		dataTenth[11] = "eleven";
+		dataTenth[12] = "twelve";
+		dataTenth[13] = "thirteen";
+		dataTenth[14] = "fourteen";
+		dataTenth[15] = "fifteen";
 	}
 	void setEnding()
 	{
-		ending[4] = "Thousand";
-		ending[7] = "Million";
-		ending[10] = "Billion";
-		ending[13] = "Trillion";
+		ending[4] = "thousand";
+		ending[7] = "million";
+		ending[10] = "billion";
+		ending[13] = "trillion";
 	}
     //private Methods
 
@@ -113,22 +113,21 @@ private:
 		int sep = digit - 1;
 		int holdData = 0;
 		bool printSpace = false;
+		bool printEnding = false;
 		string tempStore = "";
 
 		//getting data from Vector
 		for (int x = sep; x >= 0; x--)
 		{
 
-			if (digit % 3 == 0)//3 Digit Marker
+			if (digit % 3 == 0 && input[x]!=0)//3 Digit Marker
 			{
-				if (input[x] != 0)
-				{
-					tempStore = onePieceReturn(input[x]);
-					tempStore = tempStore + " Hundred";
-					ret = ret + tempStore;
-					tempStore = "";
-					printSpace = true;
-				}
+				tempStore = onePieceReturn(input[x]);
+				tempStore = tempStore + " hundred";
+				ret = ret + tempStore;
+				tempStore = "";
+				printSpace = true;
+				printEnding = true;
 			}
 			else if ((digit + 1) % 3 == 0 || tempStore == "proc")//tenth
 			{
@@ -139,15 +138,21 @@ private:
 					ret = ret +  tempStore;
 					tempStore = "";
 					printSpace = true;
+					printEnding = true;
 				}
 				else
 				{
-					tempStore = tenthPieceReturn(input[x]);
-					if (tempStore != "proc")
+					if(input[x]!=0)//if it is zero skip this part
 					{
-						ret = ret + tempStore;
-						printSpace = true;
+						tempStore = tenthPieceReturn(input[x]);
+						if (tempStore != "proc")
+						{
+							ret = ret + tempStore;
+							printSpace = true;
+							printEnding = true;
+						}
 					}
+					
 					
 				}
 
@@ -155,34 +160,51 @@ private:
 				if (tempStore == "proc")
 					holdData = input[x];
 			}
-			else
+			else//smallest number
 			{
-				tempStore = onePieceReturn(input[x]);
-				ret = ret +  tempStore;
-				tempStore = "";
-				printSpace = true;
-			}
-			//check decimal
-			if (digit == 4)//thousands
-				ret = ret + " " + ending[digit];
-			else if (digit == 7)//million
-				ret = ret + " " + ending[digit];
-			else if (digit == 10)//billion
-				ret = ret + " " + ending[digit];
-			else if (digit == 13)//trillion
-				ret = ret + " " + ending[digit];
-			if (tempStore != "proc" && x != 0)
+				if(input[x]!=0)
 				{
+					tempStore = onePieceReturn(input[x]);
+					ret = ret + tempStore;
+					tempStore = "";
+					printSpace = true;
+					printEnding = true;
+				}
+				
+			}
+			if (tempStore != "proc" && x != 0)
+			{
 				if (printSpace != false)
 					ret = ret + " ";
-				}
-			digit -= 1;//
+			}
+			//check decimal
+			if (digit == 4 && printEnding == true)//thousands
+			{
+				ret = ret + ending[digit]+" ";
+				printEnding = false;
+			}
+			else if (digit == 7 && printEnding == true)//million
+			{
+				ret = ret + ending[digit] + " ";
+				printEnding = false;
+			}	
+			else if (digit == 10 && printEnding == true)//billion
+			{
+				ret = ret + ending[digit] + " ";
+				printEnding = false;
+			}	
+			else if (digit == 13 && printEnding == true)//trillion
+			{
+				ret = ret + ending[digit] + " ";
+				printEnding = false;
+			}	
+			digit -= 1;//decrement digit
 			printSpace = false;
 			if (x == 0)//erasing if there are any accidental adding space issue
 			{
-
-				if (ret.compare((ret.length()-1),1,"") == 1)
-					ret.erase((ret.length() - 1), 1);
+				int point = ret.length()-1;				
+				if (ret[point] == ' ')
+					ret.erase(point, 1);
 			}
 		}
 	}
@@ -276,7 +298,7 @@ int main()
 		
 		if (dataIn.validNumber(inputKbd) == false)
 		{
-			cout << "there is Characted That Is Not Number This Is Not Allowed \n";
+			cout << "there is Character That Is Not Number This Is Not Allowed \n";
 			getline(cin, inputKbd);
 			return 0;
 		}
